@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>باز کردن کانال یوتیوب</title>
+<style>
+body{margin:0;min-height:100vh;display:flex;align-items:center;justify-content:center;background:#0f0f0f;color:#fff;font-family:Tahoma,sans-serif;text-align:center;padding:24px}
+.box{max-width:340px}
+h1{font-size:19px;font-weight:700;margin:0 0 8px}
+p{font-size:14px;line-height:1.9;color:#bbb;margin:0 0 22px}
+a.btn{display:block;background:#ff0033;color:#fff;text-decoration:none;padding:16px;border-radius:12px;font-size:16px;font-weight:700}
+a.alt{display:block;margin-top:14px;color:#888;font-size:13px;text-decoration:underline}
+</style>
+</head>
+<body>
+<div class="box">
+<h1>در حال باز کردن اپ یوتیوب…</h1>
+<p>اگر خودش باز نشد، دکمه زیر را بزن.</p>
+<a class="btn" id="go" href="#">باز کردن در یوتیوب</a>
+<a class="alt" id="web" href="#">باز کردن در مرورگر</a>
+</div>
+<script>
+var CHANNEL = "UCl3nZavZxlVUeGNAnIPBOUw";
+(function(){
+  var path = "channel/" + CHANNEL;
+  var web  = "https://www.youtube.com/" + path + "?sub_confirmation=1";
+  var ua = navigator.userAgent || "";
+  var ios = /iPad|iPhone|iPod/.test(ua);
+  var and = /Android/.test(ua);
+  var app = web;
+  if (ios) {
+    app = "vnd.youtube://www.youtube.com/" + path + "?sub_confirmation=1";
+  } else if (and) {
+    app = "intent://www.youtube.com/" + path + "?sub_confirmation=1"
+        + "#Intent;scheme=https;package=com.google.android.youtube;"
+        + "S.browser_fallback_url=" + encodeURIComponent(web) + ";end";
+  }
+  document.getElementById("go").href = app;
+  document.getElementById("web").href = web;
+  var left = false;
+  document.addEventListener("visibilitychange", function(){ if(document.hidden) left = true; });
+  setTimeout(function(){ window.location.replace(app); }, 120);
+  setTimeout(function(){ if(!left) window.location.replace(web); }, 2500);
+})();
+</script>
+</body>
+</html>
