@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>باز کردن در YouTube</title>
+
+  <style>
+    body {
+      margin: 0;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: #ffffff;
+      font-family: Arial, Tahoma, sans-serif;
+      text-align: center;
+      color: #111;
+    }
+
+    .container {
+      width: 90%;
+      max-width: 420px;
+    }
+
+    .youtube {
+      font-size: 55px;
+      margin-bottom: 15px;
+    }
+
+    h2 {
+      font-size: 22px;
+      margin-bottom: 10px;
+    }
+
+    p {
+      color: #555;
+      line-height: 1.8;
+      font-size: 15px;
+    }
+
+    button {
+      width: 100%;
+      margin-top: 18px;
+      padding: 15px;
+      border: 0;
+      border-radius: 12px;
+      background: #ff0000;
+      color: white;
+      font-size: 18px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+  </style>
+</head>
+
+<body>
+
+<div class="container">
+
+  <div class="youtube">▶️</div>
+
+  <h2>در حال باز کردن YouTube...</h2>
+
+  <p>
+    اگر YouTube به‌صورت خودکار باز نشد،
+    روی دکمه زیر بزنید.
+  </p>
+
+  <button onclick="openYouTube()">
+    باز کردن در YouTube
+  </button>
+
+</div>
+
+<script>
+
+const params = new URLSearchParams(window.location.search);
+
+const videoId = params.get("v");
+
+if (!videoId) {
+  document.querySelector("h2").innerText =
+    "لینک ویدئو مشخص نشده است";
+
+  document.querySelector("button").style.display =
+    "none";
+
+  throw new Error("Missing video ID");
+}
+
+const youtubeWeb =
+  "https://www.youtube.com/watch?v=" + videoId;
+
+const ua = navigator.userAgent || "";
+
+const isAndroid =
+  /Android/i.test(ua);
+
+const isIOS =
+  /iPhone|iPad|iPod/i.test(ua) ||
+  (
+    navigator.platform === "MacIntel" &&
+    navigator.maxTouchPoints > 1
+  );
+
+
+function openYouTube() {
+
+  /* ANDROID */
+
+  if (isAndroid) {
+
+    const intentURL =
+      "intent://www.youtube.com/watch?v=" +
+      videoId +
+      "#Intent;" +
+      "scheme=https;" +
+      "package=com.google.android.youtube;" +
+      "S.browser_fallback_url=" +
+      encodeURIComponent(youtubeWeb) +
+      ";end";
+
+    window.location.href = intentURL;
+
+    return;
+  }
+
+
+  /* iPHONE / iPAD */
+
+  if (isIOS) {
+
+    const appURL =
+      "youtube://www.youtube.com/watch?v=" +
+      videoId;
+
+    const start = Date.now();
+
+    window.location.href = appURL;
+
+    setTimeout(function() {
+
+      if (
+        !document.hidden &&
+        Date.now() - start < 3000
+      ) {
+        window.location.href = youtubeWeb;
+      }
+
+    }, 1600);
+
+    return;
+  }
+
+
+  /* OTHER */
+
+  window.location.href = youtubeWeb;
+}
+
+
+/* Automatic attempt */
+
+setTimeout(function() {
+  openYouTube();
+}, 500);
+
+</script>
+
+</body>
+</html>
